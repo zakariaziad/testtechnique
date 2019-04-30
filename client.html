@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <button id="btn" data-toggle="collapse" data-target="#toggled"> Les paramètres du rectangle (GET) </button>
+
+    <div id="toggled" class="collapse">
+
+        <p id="length"></p>
+        <p id="width"></p>
+
+        Longueur :
+        <input type="text" id="modifyLength"> Largeur:
+        <input type="text" id="modifyWidth">
+
+        <button id="modify"> Modifier les caractéristiques du réctangle</button>
+    </div>
+
+
+    <script type="text/javascript">
+
+        var id;
+        var length;
+        var width;
+        var btn = document.getElementById("btn").addEventListener("click", function () {
+            var url = "http://localhost:8080/rectangle";
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.onload = function () {
+                var rectangle = JSON.parse(xhr.responseText);
+                length = rectangle.length;
+                width = rectangle.width;
+                id = rectangle.id;
+                document.getElementById("length").innerHTML = "La longueur est : " + length;
+                document.getElementById("width").innerHTML = "La largeur est : " + width;
+            };
+            xhr.send();
+        });
+
+        var btnModify = document.getElementById("modify").addEventListener("click", function () {
+            var url = "http://localhost:8080/rectangle/" + id;
+            var json;
+            length = parseInt(document.getElementById("modifyLength").value);
+            width = parseInt(document.getElementById("modifyWidth").value);
+            if (typeof length != 'number' || typeof width != 'number') console.error('veuillez rentrer un nombre');
+            var data = {};
+            data.length = length;
+            data.width = width;
+            json = JSON.stringify(data);
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", url, true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.onload = function () {
+                document.getElementById("length").innerHTML = "La longueur est : " + length;
+                document.getElementById("width").innerHTML = "La largeur est : " + width;
+
+            }
+            xhr.send(json);
+
+        })
+
+
+
+    </script>
+
+
+
+
+
+</body>
+
+
+</html>
